@@ -4,10 +4,14 @@
 :root {
   --background: oklch(0.12 0.01 250);
   --card: oklch(0.16 0.01 250);
-  --primary: oklch(0.8 0.18 160);
+  --primary: oklch(0.7 0.18 160);
   --accent: oklch(0.7 0.18 310);
-  --text: oklch(0.95 0.005 90);
-  
+  --text: oklch(0.90 0.005 90);
+  --input: oklch(0.18 0.01 250);
+  --border: oklch(0.22 0.015 250);
+  --placeholder: oklch(0.75 0.005 90);
+  --destructive: oklch(0.65 0.22 25);
+
   --font-inter: 'Inter', sans-serif;
 }
 
@@ -15,29 +19,19 @@ body {
   font-family: var(--font-inter);
 }
 
-@layer utilities {
-  .bg-theme-background {
-    background-color: var(--background);
-  }
-
-  .bg-theme-card {
-    background-color: var(--card);
-  }
-
-  .text-theme-primary {
-    color: var(--primary);
-  }
-
-  .text-theme-accent {
-    color: var(--accent);
-  }
-
-  .text-theme {
-    color: var(--text);
-  }
-}
-
 @theme inline {
+  /* Meu tema */
+  --color-background: var(--background);
+  --color-card: var(--card);
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+  --color-text: var(--text);
+  --color-input: var(--input);
+  --color-input-ring: var(--primary);
+  --color-input-border: var(--border);
+  --color-input-placeholder: var(--placeholder);
+  --color-destructive: var(--destructive);
+
   /* Material UI typography */
   --font-h1: var(--mui-font-h1);
   --font-h2: var(--mui-font-h2);
