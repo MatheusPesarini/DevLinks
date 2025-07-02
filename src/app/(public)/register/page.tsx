@@ -6,7 +6,7 @@ import Link from 'next/link';
 export default function Register() {
 	return (
 		<>
-			<div className='background-effect'></div>
+			<div className="background-effect"></div>
 			<div className="flex flex-col items-center justify-center min-h-screen p-4">
 				<div className="bg-card p-8 rounded-xl shadow-xl w-full max-w-md">
 					<Stack className="gap-6">
@@ -19,7 +19,7 @@ export default function Register() {
 						<Input id="password" label="Confirmar Senha" type="password" />
 						<SendButton />
 						<div className="text-sm text-text text-center mt-4">
-							Já tem uma conta?{" "}
+							Já tem uma conta?{' '}
 							<Link href="/login" className="text-primary hover:underline">
 								Login
 							</Link>
