@@ -1,12 +1,12 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import { signUpSchema } from '../definitions';
+import { ActionState, signInSchema, signUpSchema } from '../definitions';
 import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
 import { createClient } from '../supabase/action';
 import { redirect } from 'next/navigation';
 
-export async function signUp(formData: FormData) {
+export async function signUp(prevState: ActionState | null, formData: FormData): Promise<ActionState> {
   const supabase = createClient();
 
   const validatedFields = signUpSchema.safeParse({
@@ -18,7 +18,8 @@ export async function signUp(formData: FormData) {
 
   if (!validatedFields.success) {
     return {
-      error: validatedFields.error.errors[0].message,
+      message: validatedFields.error.errors.map(err => err.message).join(', '),
+      success: false,
     };
   }
 
@@ -36,18 +37,30 @@ export async function signUp(formData: FormData) {
 
   if (error) {
     return {
-      error: error.message,
+      message: error.message,
+      success: false,
     }
   }
 
   redirect('/login');
 }
 
-export async function signIn(formData: FormData) {
+export async function signIn(prevState: ActionState | null, formData: FormData): Promise<ActionState> {
   const supabase = createClient();
 
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
+  const validatedFields = signInSchema.safeParse({
+    email: formData.get('email') as string,
+    password: formData.get('password') as string,
+  });
+
+  if (!validatedFields.success) {
+    return {
+      message: validatedFields.error.errors.map(err => err.message).join(', '),
+      success: false,
+    };
+  }
+
+  const { email, password } = validatedFields.data;
 
   const { error } = await supabase.auth.signInWithPassword({
     email,
@@ -56,7 +69,8 @@ export async function signIn(formData: FormData) {
 
   if (error) {
     return {
-      error: 'Email ou senha incorretos'
+      message: error.message,
+      success: false,
     };
   }
 
@@ -64,8 +78,7 @@ export async function signIn(formData: FormData) {
 }
 
 export async function signOut() {
-  const cookieStore = cookies();
-  const supabase = createServerActionClient({ cookies: () => cookieStore });
+  const supabase = createClient();
 
   await supabase.auth.signOut();
 

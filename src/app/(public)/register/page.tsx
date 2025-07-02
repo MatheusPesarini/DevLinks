@@ -1,9 +1,16 @@
+"use client";
+
 import Input from '@/components/ui/input';
 import { SendButton } from '@/components/ui/sendButton';
+import { signUp } from '@/lib/actions/auth';
+import { initialState } from '@/lib/definitions';
 import { Stack } from '@mui/material';
 import Link from 'next/link';
+import { useActionState } from 'react';
 
 export default function Register() {
+	const [state, formAction, isPending] = useActionState(signUp, initialState)
+
 	return (
 		<>
 			<div className="background-effect"></div>

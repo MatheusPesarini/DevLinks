@@ -16,3 +16,13 @@ export const signInSchema = z.object({
 	email: z.string().email('Email inválido'),
 	password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
 });
+
+export interface ActionState {
+	success?: boolean;
+	message?: string;
+}
+
+export const initialState: ActionState = {
+	success: false,
+	message: '',
+}
