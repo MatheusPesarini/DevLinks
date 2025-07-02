@@ -1,10 +1,9 @@
-import Image from "next/image";
-import Register from "./(public)/register/page";
+import Login from './(public)/login/page';
 
 export default function Home() {
-  return (
-    <div className="">
-      <Register />
-    </div>
-  );
+	return (
+		<div className="">
+			<Login />
+		</div>
+	);
 }

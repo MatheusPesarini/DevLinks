@@ -1,3 +1,1 @@
-export default function Middleware() {
-
-}
+export default function Middleware() {}
