@@ -26,3 +26,8 @@ export const initialState: ActionState = {
 	success: false,
 	message: '',
 }
+
+export interface SendButtonProps {
+	isPending?: boolean;
+	children?: React.ReactNode;
+}

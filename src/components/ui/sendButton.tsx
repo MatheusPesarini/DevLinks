@@ -1,10 +1,13 @@
-import { Button } from '@mui/material';
+import { Box, Button, CircularProgress } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+import { SendButtonProps } from '@/lib/definitions';
 
-export function SendButton() {
+export function SendButton({ isPending = false, children = "Enviar" }: SendButtonProps) {
 	return (
 		<Button
 			variant="contained"
+			type='submit'
+			disabled={isPending}
 			sx={{
 				backgroundColor: 'var(--primary)',
 				color: 'var(--background)',
@@ -23,9 +26,18 @@ export function SendButton() {
 					transition: 'all 0.1s ease',
 				},
 			}}
-			endIcon={<SendIcon />}
 		>
-			Enviar
+			{isPending ? (
+				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+					<CircularProgress size={20} sx={{ color: 'var(--placeholder)' }} />
+					Enviando...
+				</Box>
+			) : (
+				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+					{children}
+					<SendIcon />
+				</Box>
+			)}
 		</Button>
 	);
 }
