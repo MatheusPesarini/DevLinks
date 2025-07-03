@@ -1,8 +1,6 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import { ActionState, signInSchema, signUpSchema } from '../definitions';
-import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
 import { createClient } from '../supabase/action';
 import { redirect } from 'next/navigation';
 
@@ -18,19 +16,33 @@ export async function signUp(prevState: ActionState | null, formData: FormData):
 
   if (!validatedFields.success) {
     return {
-      message: validatedFields.error.errors.map(err => err.message).join(', '),
+      message: validatedFields.error.errors[0].message,
       success: false,
     };
   }
 
   const { username, email, password } = validatedFields.data;
 
-  const { error } = await supabase.auth.signUp({
+  const { data: existingUser } = await (await supabase)
+    .from('profiles')
+    .select('username')
+    .eq('username', username)
+    .single();
+
+  if (existingUser) {
+    return {
+      message: 'Nome de usuário já está em uso',
+      success: false,
+    };
+  }
+
+  const { error } = await (await supabase).auth.signUp({
     email,
     password,
     options: {
       data: {
         username,
+        full_name: username, 
       }
     }
   })
@@ -62,7 +74,7 @@ export async function signIn(prevState: ActionState | null, formData: FormData):
 
   const { email, password } = validatedFields.data;
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { error } = await (await supabase).auth.signInWithPassword({
     email,
     password,
   });
@@ -80,7 +92,7 @@ export async function signIn(prevState: ActionState | null, formData: FormData):
 export async function signOut() {
   const supabase = createClient();
 
-  await supabase.auth.signOut();
+  await (await supabase).auth.signOut();
 
   redirect('/login');
 }

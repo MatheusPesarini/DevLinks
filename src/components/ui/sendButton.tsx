@@ -25,11 +25,16 @@ export function SendButton({ isPending = false, children = "Enviar" }: SendButto
 					filter: 'brightness(0.9)',
 					transition: 'all 0.1s ease',
 				},
+				'&:disabled': {
+					backgroundColor: 'var(--primary)',
+					opacity: 0.8, 
+					color: 'var(--background)',
+				}
 			}}
 		>
 			{isPending ? (
 				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-					<CircularProgress size={20} sx={{ color: 'var(--placeholder)' }} />
+					<CircularProgress size={20} sx={{ color: 'var(--background)' }} />
 					Enviando...
 				</Box>
 			) : (
