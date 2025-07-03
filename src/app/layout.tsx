@@ -4,6 +4,7 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import { ThemeProvider } from '@mui/material';
 import theme from '@/theme';
 import './globals.css';
+import { AuthProvider } from '@/context/AuthContext';
 
 const inter = Inter({
 	weight: ['300', '400', '500', '700'],
@@ -36,7 +37,9 @@ export default function RootLayout({
 		>
 			<body className={`${inter.className} antialiased`}>
 				<AppRouterCacheProvider options={{ enableCssLayer: true }}>
-					<ThemeProvider theme={theme}>{children}</ThemeProvider>
+					<ThemeProvider theme={theme}>
+						<AuthProvider>{children}</AuthProvider>
+					</ThemeProvider>
 				</AppRouterCacheProvider>
 			</body>
 		</html>

@@ -1,3 +1,5 @@
+import { User } from '@supabase/supabase-js';
+import React, { createContext } from 'react';
 import z from 'zod';
 
 export const signUpSchema = z
@@ -25,9 +27,21 @@ export interface ActionState {
 export const initialState: ActionState = {
 	success: false,
 	message: '',
-}
+};
 
 export interface SendButtonProps {
 	isPending?: boolean;
 	children?: React.ReactNode;
+}
+
+export interface AuthGuardProps {
+	children: React.ReactNode;
+	requireAuth?: boolean;
+	redirectTo?: string;
+}
+
+export interface AuthContextType {
+	user: User | null;
+	loading: boolean;
+	profile: any | null;
 }

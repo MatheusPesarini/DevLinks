@@ -1,60 +1,34 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { createServerClient } from '@supabase/ssr'
+import { type NextRequest, NextResponse } from 'next/server';
+import { createClient } from './lib/supabase/server';
 
-export default async function Middleware(request: NextRequest) {
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  })
+export async function middleware(req: NextRequest) {
+	const res = NextResponse.next();
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            request.cookies.set({ name, value, ...options })
-          })
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          })
-          cookiesToSet.forEach(({ name, value, options }) => {
-            response.cookies.set({ name, value, ...options })
-          })
-        },
-      },
-    }
-  )
+	const supabase = createClient();
 
-  const { data: { session } } = await supabase.auth.getSession()
+	try {
+		const {
+			data: { session },
+		} = await (await supabase).auth.getSession();
 
-  if (request.nextUrl.pathname.startsWith("/dashboard")) {
-    if (!session) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-  }
+		if (req.nextUrl.pathname.startsWith('/dashboard')) {
+			if (!session) {
+				return NextResponse.redirect(new URL('/login', req.url));
+			}
+		}
 
-  if (['/login', '/register'].includes(request.nextUrl.pathname)) {
-    if (session) {
-      return NextResponse.redirect(new URL('/dashboard', request.url))
-    }
-  }
+		if (['/login', '/register'].includes(req.nextUrl.pathname)) {
+			if (session) {
+				return NextResponse.redirect(new URL('/dashboard', req.url));
+			}
+		}
+	} catch (error) {
+		console.error('Middleware error:', error);
+	}
 
-  return response;
+	return res;
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next|api|favicon.ico|assets|static).*)",
-    "/dashboard/:path*",
-    "/login",
-    "/register",
-  ],
+	matcher: ['/dashboard/:path*', '/login', '/register'],
 };

@@ -1,22 +1,27 @@
 'use client';
 
 import { useAuth } from '@/context/AuthContext';
+import { AuthGuardProps } from '@/lib/definitions';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-export default function Home() {
+export function AuthGuard({
+	children,
+	requireAuth = false,
+	redirectTo = '/dashboard',
+}: AuthGuardProps) {
 	const { user, loading } = useAuth();
 	const router = useRouter();
 
 	useEffect(() => {
 		if (loading) return;
 
-		if (user) {
-			router.push('/dashboard');
-		} else {
+		if (requireAuth && !user) {
 			router.push('/login');
+		} else if (!requireAuth && user) {
+			router.push(redirectTo || '/dashboard');
 		}
-	}, [user, loading, router]);
+	}, [user, loading, requireAuth, redirectTo, router]);
 
 	if (loading) {
 		return (
@@ -25,6 +30,5 @@ export default function Home() {
 			</div>
 		);
 	}
-
-	return null;
+	return <>{children}</>;
 }
